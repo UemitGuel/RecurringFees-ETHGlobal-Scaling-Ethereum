@@ -1,6 +1,6 @@
 import { Card, CardBody, Image, Stack, Heading, Text, Divider, CardFooter, ButtonGroup, Button } from '@chakra-ui/react'
 
-const ActiveCard = ({ }) => {
+const InActiveCard = ({ }) => {
     return (
         <Card maxW='sm'>
             <CardBody>
@@ -23,10 +23,17 @@ const ActiveCard = ({ }) => {
             </CardBody>
             <Divider />
             <CardFooter>
-                <Text>Active until 20.05.2023</Text>
+                <ButtonGroup spacing='2'>
+                    <Button variant='solid' colorScheme='blue'>
+                        Buy now
+                    </Button>
+                    <Button variant='ghost' colorScheme='blue'>
+                        Add to cart
+                    </Button>
+                </ButtonGroup>
             </CardFooter>
         </Card>
     )
 }
 
-export default ActiveCard;
+export default InActiveCard;
