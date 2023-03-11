@@ -1,29 +1,17 @@
 // Setup: npm install alchemy-sdk
-import { Alchemy, Network } from "alchemy-sdk";
+// Github: https://github.com/alchemyplatform/alchemy-sdk-js
+import { Network, Alchemy } from "alchemy-sdk";
 
-const config = {
-    apiKey: "cH9g5ftcQAdQm-fJ9Zljl7Z8lhv2i4CX",
-    network: Network.ETH_GOERLI,
-};
-const alchemy = new Alchemy(config);
+// Optional Config object, but defaults to demo api-key and eth-mainnet.
+const settings = {
+    apiKey: demo, // Replace with your Alchemy API Key.
+    network: Network.ETH_MAINNET, // Replace with your network.
 
-// Fetch all the NFTs owned by elanhalpern.eth
-const main = async () => {
-    // Get all NFTs
-    const nfts = await alchemy.nft.getNftsForOwner("elanhalpern.eth");
-    // Print NFTs
-    console.log(nfts);
 };
 
-// Execute the code
-const runMain = async () => {
-    try {
-        await main();
-        process.exit(0);
-    } catch (error) {
-        console.log(error);
-        process.exit(1);
-    }
-};
+const alchemy = new Alchemy(settings);
 
-runMain();
+// Print all NFTs returned in the response:
+function getNftsForOwner() {
+    alchemy.nft.getNftsForOwner("0xshah.eth").then(console.log);
+}
