@@ -18,7 +18,10 @@ const Home: NextPage = () => {
         </TabList>
         <TabPanels>
           <TabPanel>
-            <SimpleGrid minChildWidth="350px" spacing={8} py={8}>
+            <SimpleGrid minChildWidth="150px" spacing={8} py={8}>
+              <InActiveCard />
+              <InActiveCard />
+              <InActiveCard />
               <InActiveCard />
               <InActiveCard />
             </SimpleGrid>

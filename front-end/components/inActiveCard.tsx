@@ -14,13 +14,11 @@ const InActiveCard = ({ }) => {
                     <Text color='blue.600' fontSize='2xl'>
                         0.45 ETH
                     </Text>
-                </Stack>
-            </CardBody>
-            <CardFooter>
                     <Button variant='solid' colorScheme='blue'>
                         Activate
                     </Button>
-            </CardFooter>
+                </Stack>
+            </CardBody>
         </Card>
     )
 }

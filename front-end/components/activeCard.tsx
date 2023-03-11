@@ -11,18 +11,11 @@ const ActiveCard = ({ }) => {
                 />
                 <Stack mt='6' spacing='3'>
                     <Heading size='md'>Living room Sofa</Heading>
-                    <Text>
-                        Activate until 20.06.2023 for
-                    </Text>
                     <Text color='blue.600' fontSize='2xl'>
-                        0.45 ETH
+                        Valid until 20.06.2023
                     </Text>
                 </Stack>
             </CardBody>
-            <Divider />
-            <CardFooter>
-                <Text>Active until 20.05.2023</Text>
-            </CardFooter>
         </Card>
     )
 }
