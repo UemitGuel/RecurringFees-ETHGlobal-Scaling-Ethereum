@@ -11,9 +11,8 @@ const Home: NextPage = () => {
       <Container p={'16'} centerContent> 
       <ConnectButton /> 
       </Container>
-    
-      <Tabs isFitted size='lg' variant='solid-rounded'>
-        <TabList mb='1em'>
+      <Tabs size='lg' isFitted>
+        <TabList>
           <Tab>Inactive NFTs</Tab>
           <Tab>Active NFTs</Tab>
         </TabList>
