@@ -1,6 +1,6 @@
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import type { NextPage } from 'next';
-import { SimpleGrid, Container, Heading, Stack, HStack, Divider, Tabs, Tab, TabList, TabPanels, TabPanel, Text } from '@chakra-ui/react'
+import { SimpleGrid, Container, Tabs, Tab, TabList, TabPanels, TabPanel, Text } from '@chakra-ui/react'
 import ActiveCard from '../components/activeCard';
 import InActiveCard from '../components/inActiveCard';
 import React, { useEffect, useState } from 'react';
