@@ -11,8 +11,6 @@ import { OwnedNftsResponse } from 'alchemy-sdk';
 
 const Home: NextPage = () => {
   const [nfts, setNfts] = useState<OwnedNftsResponse>({ ownedNfts: [], totalCount: 0, blockHash: '' });
-  const [address3, setAddress] = useState('')
-  const [isConnected3, setIsConnected] = useState(false)
   const { address, isConnected } = useAccount()
   const { connect } = useConnect({
     connector: new InjectedConnector(),
@@ -21,14 +19,11 @@ const Home: NextPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       if (address) {
-        setAddress(address);
         const nfts = await getNFTs(address);
         setNfts(nfts);
       } else {
         console.log('myValue is undefined');
-        setAddress('');
       }
-      setIsConnected(isConnected);
     };
 
     fetchData();
