@@ -1,7 +1,7 @@
 import { Card, CardBody, Image, Highlight, Stack, Heading, Text, Divider, CardFooter, ButtonGroup, Button } from '@chakra-ui/react'
 import React from 'react';
 
-const InActiveCard = ({ title, url }) => {
+const InActiveCard = ({ title, url }: { title: string, url: string }) => {
     return (
         <Card maxW='sm'>
             <CardBody>
