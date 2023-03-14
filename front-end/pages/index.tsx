@@ -1,24 +1,16 @@
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import type { NextPage } from 'next';
-import { SimpleGrid, Container, Heading, Stack, HStack, Divider, Tabs, Tab, TabList, TabPanels, TabPanel, Text  } from '@chakra-ui/react'
+import { SimpleGrid, Container, Heading, Stack, HStack, Divider, Tabs, Tab, TabList, TabPanels, TabPanel, Text } from '@chakra-ui/react'
 import ActiveCard from '../components/activeCard';
 import InActiveCard from '../components/inActiveCard';
 import React, { useEffect, useState } from 'react';
 import { useAccount, useConnect, useEnsName } from 'wagmi'
 import { InjectedConnector } from 'wagmi/connectors/injected'
-
-import { Alchemy, Network, AssetTransfersCategory } from "alchemy-sdk";
-
-const config = {
-  apiKey: process.env.NEXT_PUBLIC_ALCHEMY_APIKEY, // Replace with your Alchemy API key.
-  network: Network.ETH_GOERLI, // Replace with your network.
-};
-
-const alchemy = new Alchemy(config);
-
+import { getNFTs } from './api/alchemyNFTs';
+import { OwnedNftsResponse } from 'alchemy-sdk';
 
 const Home: NextPage = () => {
-
+  const [nfts, setNfts] = useState<OwnedNftsResponse>({ ownedNfts: [], totalCount: 0, blockHash: '' });
   const [address3, setAddress] = useState('')
   const [isConnected3, setIsConnected] = useState(false)
   const { address, isConnected } = useAccount()
@@ -27,28 +19,25 @@ const Home: NextPage = () => {
   })
 
   useEffect(() => {
-    if (address) {
-      setAddress(address);
-    } else {
-      console.log('myValue is undefined');
-      setAddress('')
-    }
-    setIsConnected(isConnected)
+    const fetchData = async () => {
+      if (address) {
+        setAddress(address);
+        const nfts = await getNFTs(address);
+        setNfts(nfts);
+      } else {
+        console.log('myValue is undefined');
+        setAddress('');
+      }
+      setIsConnected(isConnected);
+    };
+
+    fetchData();
   }, [address])
 
   return (
     <Container maxW="container.xl">
-      <ConnectButton />
-      <Text>{isConnected3 ? 'Yes' : 'No'}</Text>
-      <Text>{address3}</Text>
-    </Container>
-  )
-}
-
-/*   return (
-    <Container maxW="container.xl">
-      <Container p={'16'} centerContent> 
-      <ConnectButton /> 
+      <Container p={'16'} centerContent>
+        <ConnectButton />
       </Container>
       <Tabs size='lg' isFitted>
         <TabList>
@@ -58,11 +47,9 @@ const Home: NextPage = () => {
         <TabPanels>
           <TabPanel>
             <SimpleGrid minChildWidth="150px" spacing={8} py={8}>
-              <InActiveCard />
-              <InActiveCard />
-              <InActiveCard />
-              <InActiveCard />
-              <InActiveCard />
+              {nfts.ownedNfts.map(nft => (
+                <InActiveCard key={nft.tokenId + nft.contract} title={nft.title} url={nft.media[0].gateway} />
+              ))}
             </SimpleGrid>
           </TabPanel>
           <TabPanel>
@@ -72,8 +59,8 @@ const Home: NextPage = () => {
             </SimpleGrid>
           </TabPanel>
         </TabPanels>
-      </Tabs>  
+      </Tabs>
     </Container>
-  ); */
-
+  );
+}
 export default Home;

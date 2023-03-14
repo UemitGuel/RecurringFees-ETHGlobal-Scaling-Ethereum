@@ -1,4 +1,5 @@
 import { Card, CardBody, Image, Stack, Heading, Text, Divider, CardFooter, ButtonGroup, Button } from '@chakra-ui/react'
+import React from 'react';
 
 const ActiveCard = ({ }) => {
     return (
