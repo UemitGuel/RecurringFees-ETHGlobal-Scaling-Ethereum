@@ -1,12 +1,30 @@
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import type { NextPage } from 'next';
-import { SimpleGrid, Container, Heading, Stack, HStack, Divider, Tabs, Tab, TabList, TabPanels, TabPanel  } from '@chakra-ui/react'
+import { SimpleGrid, Container, Heading, Stack, HStack, Divider, Tabs, Tab, TabList, TabPanels, TabPanel, Text  } from '@chakra-ui/react'
 import ActiveCard from '../components/activeCard';
 import InActiveCard from '../components/inActiveCard';
+import React from 'react';
+import { useAccount, useConnect, useEnsName } from 'wagmi'
+import { InjectedConnector } from 'wagmi/connectors/injected'
 
 
 const Home: NextPage = () => {
+  const { address, isConnected } = useAccount()
+  const { data: ensName } = useEnsName({ address })
+  const { connect } = useConnect({
+    connector: new InjectedConnector(),
+  })
+
   return (
+    <Container maxW="container.xl">
+      <ConnectButton />
+      <Text>{isConnected ? 'Yes' : 'No'}</Text>
+      <Text>{address}</Text>
+    </Container>
+  )
+}
+
+/*   return (
     <Container maxW="container.xl">
       <Container p={'16'} centerContent> 
       <ConnectButton /> 
@@ -35,7 +53,6 @@ const Home: NextPage = () => {
         </TabPanels>
       </Tabs>  
     </Container>
-  );
-};
+  ); */
 
 export default Home;
