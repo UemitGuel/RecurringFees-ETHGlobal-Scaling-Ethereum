@@ -3,23 +3,45 @@ import type { NextPage } from 'next';
 import { SimpleGrid, Container, Heading, Stack, HStack, Divider, Tabs, Tab, TabList, TabPanels, TabPanel, Text  } from '@chakra-ui/react'
 import ActiveCard from '../components/activeCard';
 import InActiveCard from '../components/inActiveCard';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAccount, useConnect, useEnsName } from 'wagmi'
 import { InjectedConnector } from 'wagmi/connectors/injected'
 
+import { Alchemy, Network, AssetTransfersCategory } from "alchemy-sdk";
+
+const config = {
+  apiKey: process.env.NEXT_PUBLIC_ALCHEMY_APIKEY, // Replace with your Alchemy API key.
+  network: Network.ETH_GOERLI, // Replace with your network.
+};
+
+const alchemy = new Alchemy(config);
+
 
 const Home: NextPage = () => {
+
+  const [address3, setAddress] = useState('')
+  const [isConnected3, setIsConnected] = useState(false)
   const { address, isConnected } = useAccount()
-  const { data: ensName } = useEnsName({ address })
   const { connect } = useConnect({
     connector: new InjectedConnector(),
+  })
+
+  useEffect(() => {
+    if (address) {
+      setAddress(address);
+    } else {
+      console.log('myValue is undefined');
+      setAddress('')
+    }
+    setIsConnected(isConnected)
+
   })
 
   return (
     <Container maxW="container.xl">
       <ConnectButton />
-      <Text>{isConnected ? 'Yes' : 'No'}</Text>
-      <Text>{address}</Text>
+      <Text>{isConnected3 ? 'Yes' : 'No'}</Text>
+      <Text>{address3}</Text>
     </Container>
   )
 }
