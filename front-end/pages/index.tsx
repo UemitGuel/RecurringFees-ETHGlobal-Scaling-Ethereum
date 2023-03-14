@@ -34,8 +34,7 @@ const Home: NextPage = () => {
       setAddress('')
     }
     setIsConnected(isConnected)
-
-  })
+  }, [address])
 
   return (
     <Container maxW="container.xl">
