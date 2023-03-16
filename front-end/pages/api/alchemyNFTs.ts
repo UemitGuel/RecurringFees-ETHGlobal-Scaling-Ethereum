@@ -9,9 +9,7 @@ const alchemy = new Alchemy(config);
 
 export async function getNFTs(forAddress: string) {
     // Get all NFTs
-    const nfts = await alchemy.nft.getNftsForOwner(forAddress)
+    const response = await alchemy.nft.getNftsForOwner(forAddress)
     // Print NFTs
-    console.log(nfts)
-
-    return nfts
+    return response.ownedNfts
 }
