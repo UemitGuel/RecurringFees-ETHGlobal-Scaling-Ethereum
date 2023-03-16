@@ -1,8 +1,6 @@
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import type { NextPage } from 'next';
 import { SimpleGrid, Container, Tabs, Tab, TabList, TabPanels, TabPanel, Text } from '@chakra-ui/react'
-import ActiveCard from '../components/activeCard';
-import InActiveCard from '../components/inActiveCard';
 import React, { useEffect, useState } from 'react';
 import { useAccount, useConnect, useEnsName } from 'wagmi'
 import { InjectedConnector } from 'wagmi/connectors/injected'
@@ -10,7 +8,7 @@ import { getNFTs } from './api/alchemyNFTs';
 import { OwnedNft, OwnedNftsResponse } from 'alchemy-sdk';
 import { useContractRead } from 'wagmi'
 import ActiveNft from '../components/activeNFT';
-import InactiveNft from '../components/InActiveNft';
+import InActiveNft from '../components/inActiveNFT';
 
 
 
@@ -53,7 +51,7 @@ const Home: NextPage = () => {
           <TabPanel>
             <SimpleGrid minChildWidth="150px" spacing={8} py={8}>
               {nfts.map(nft => (
-                <InactiveNft key={nft.tokenId + nft.contract} nft={nft} />
+                <InActiveNft key={nft.tokenId + nft.contract} nft={nft} />
               ))}
             </SimpleGrid>
           </TabPanel>
