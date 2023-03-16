@@ -3,11 +3,11 @@ import { OwnedNft } from 'alchemy-sdk';
 import InActiveCard from './inActiveCard';
 import useNftActivationStatus from '../pages/hooks/useNFTActivationStatus';
 
-interface InactiveNftProps {
+interface InActiveNftProps {
     nft: OwnedNft;
 }
 
-const InactiveNft: React.FC<InactiveNftProps> = ({ nft }) => {
+const InActiveNft: React.FC<InActiveNftProps> = ({ nft }) => {
     const tokenId = parseInt(nft.tokenId) || 0;
     const { isActivated } = useNftActivationStatus(tokenId);
 
@@ -17,4 +17,4 @@ const InactiveNft: React.FC<InactiveNftProps> = ({ nft }) => {
     return null;
 };
 
-export default InactiveNft;
+export default InActiveNft;

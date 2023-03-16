@@ -9,10 +9,8 @@ import { InjectedConnector } from 'wagmi/connectors/injected'
 import { getNFTs } from './api/alchemyNFTs';
 import { OwnedNft, OwnedNftsResponse } from 'alchemy-sdk';
 import { useContractRead } from 'wagmi'
-import abi from './utils/FeeNFT.json'
-import useNftActivationStatus from './hooks/useNFTActivationStatus';
 import ActiveNft from '../components/activeNFT';
-import InactiveNft from '../components/inactiveNFT';
+import InactiveNft from '../components/InActiveNft';
 
 
 
