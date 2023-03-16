@@ -1,7 +1,7 @@
 import React from 'react';
 import { OwnedNft } from 'alchemy-sdk';
 import InActiveCard from './inActiveCard';
-import useNftActivationStatus from '../pages/hooks/useNFTActivationStatus';
+import useNftActivationStatus from '../hooks/useNFTActivationStatus';
 
 interface InActiveNftProps {
     nft: OwnedNft;

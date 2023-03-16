@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useContractRead } from 'wagmi';
-import abi from '../utils/FeeNFT.json'
-import { CONTRACT_ADDRESS } from '../../constants'
+import abi from '../pages/utils/FeeNFT.json'
+import { CONTRACT_ADDRESS } from '../constants'
 
 
 type NftActivationStatusResult = {
