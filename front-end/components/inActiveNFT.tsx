@@ -12,7 +12,7 @@ const InActiveNft: React.FC<InActiveNftProps> = ({ nft }) => {
     const { isActivated } = useNftActivationStatus(tokenId);
 
     if (!isActivated) {
-        return <InActiveCard key={nft.tokenId + nft.contract} title={nft.title} url={nft.media[0].gateway} />;
+        return <InActiveCard key={nft.tokenId + nft.contract} title={nft.title} url={nft.media[0].gateway} tokenId={+nft.tokenId} />;
     }
     return null;
 };

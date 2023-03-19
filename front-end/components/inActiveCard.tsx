@@ -1,7 +1,25 @@
 import { Card, CardBody, Image, Highlight, Stack, Heading, Text, Divider, CardFooter, ButtonGroup, Button } from '@chakra-ui/react'
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import usePayFee, { NftFeeStatusResult } from '../hooks/payFee';
 
-const InActiveCard = ({ title, url }: { title: string, url: string }) => {
+
+const InActiveCard = ({ title, url, tokenId }: { title: string, url: string, tokenId: number }) => {
+
+    const [activationStatus, setActivationStatus] = useState<NftFeeStatusResult>({ isLoading: false, isSuccess: null, write: undefined });
+
+    const { isLoading, isSuccess, write } = usePayFee(tokenId);
+
+    useEffect(() => {
+        if (isLoading || isSuccess !== null) {
+            setActivationStatus({ isLoading, isSuccess, write });
+        }
+    }, [isLoading, isSuccess]);
+
+    const handleActivateClick = () => {
+        setActivationStatus({ isLoading: true, isSuccess: null, write: write });
+        write?.(); // call the write function only when it's defined
+    };
+
     return (
         <Card maxW='sm'>
             <CardBody>
@@ -15,8 +33,8 @@ const InActiveCard = ({ title, url }: { title: string, url: string }) => {
                     <Text color='blue.600' fontSize='2xl'>
                         0.45 ETH
                     </Text>
-                    <Button variant='solid' colorScheme='blue'>
-                        Activate
+                    <Button variant='solid' colorScheme='blue' onClick={handleActivateClick} disabled={activationStatus.isLoading}>
+                        {activationStatus.isLoading ? 'Activating...' : 'Activate'}
                     </Button>
                 </Stack>
             </CardBody>
