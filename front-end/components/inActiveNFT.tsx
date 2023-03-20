@@ -2,6 +2,7 @@ import React from 'react';
 import { OwnedNft } from 'alchemy-sdk';
 import InActiveCard from './inActiveCard';
 import useNftActivationStatus from '../hooks/useNFTActivationStatus';
+import { Spinner } from '@chakra-ui/react';
 
 interface InActiveNftProps {
     nft: OwnedNft;
@@ -9,10 +10,12 @@ interface InActiveNftProps {
 
 const InActiveNft: React.FC<InActiveNftProps> = ({ nft }) => {
     const tokenId = parseInt(nft.tokenId) || 0;
-    const { isActivated } = useNftActivationStatus(tokenId);
+    const { isLoading, isActivated } = useNftActivationStatus(tokenId);
 
-    if (!isActivated) {
-        return <InActiveCard key={nft.tokenId + nft.contract} title={nft.title} url={nft.media[0].gateway} tokenId={+nft.tokenId} />;
+    if (isLoading) {
+        return (
+            <Spinner size='xl' />
+        )
     }
     return null;
 };

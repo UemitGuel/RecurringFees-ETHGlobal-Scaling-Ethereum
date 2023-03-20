@@ -1,7 +1,6 @@
-import { Card, CardBody, Image, Highlight, Stack, Heading, Text, Divider, CardFooter, ButtonGroup, Button } from '@chakra-ui/react'
+import { Card, CardBody, Image, Stack, Heading, Text, Button, Alert, AlertIcon } from '@chakra-ui/react'
 import React, { useEffect, useState } from 'react';
 import usePayFee, { NftFeeStatusResult } from '../hooks/payFee';
-
 
 const InActiveCard = ({ title, url, tokenId }: { title: string, url: string, tokenId: number }) => {
 
@@ -33,9 +32,17 @@ const InActiveCard = ({ title, url, tokenId }: { title: string, url: string, tok
                     <Text color='blue.600' fontSize='2xl'>
                         0.45 ETH
                     </Text>
-                    <Button variant='solid' colorScheme='blue' onClick={handleActivateClick} disabled={activationStatus.isLoading}>
-                        {activationStatus.isLoading ? 'Activating...' : 'Activate'}
-                    </Button>
+                    {!isSuccess ? (
+                        <Button variant='solid' colorScheme='blue' onClick={handleActivateClick} disabled={activationStatus.isLoading}>
+                            {activationStatus.isLoading ? 'Activating...' : 'Activate'}
+                        </Button>
+                    ) : (
+                        <Alert status='success'>
+                            <AlertIcon />
+                            Data uploaded to the server. Fire on!
+                        </Alert>
+                    )}
+
                 </Stack>
             </CardBody>
         </Card>
