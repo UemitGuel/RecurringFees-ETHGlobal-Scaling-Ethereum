@@ -5,8 +5,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useAccount } from 'wagmi'
 import { getNFTs } from './api/alchemyNFTs';
 import { OwnedNft } from 'alchemy-sdk';
-import ActiveNft from '../components/activeNft';
-import InActiveNft from '../components/inActiveNFT';
+import CardComponent from '../components/cardComponent';
 
 const Home: NextPage = () => {
   const [nfts, setNfts] = useState<OwnedNft[]>([]);
@@ -44,28 +43,11 @@ const Home: NextPage = () => {
         <ConnectButton />
       </Container>
       {isDisconnected ? null : (
-        <Tabs size='lg' isFitted>
-          <TabList>
-            <Tab>Inactive Memberships</Tab>
-            <Tab>Active Memberships</Tab>
-          </TabList>
-          <TabPanels>
-            <TabPanel>
-              <SimpleGrid minChildWidth="150px" spacing={8} py={8}>
-                {nfts.map(nft => (
-                  <InActiveNft key={nft.tokenId + nft.contract.address} nft={nft} />
-                ))}
-              </SimpleGrid>
-            </TabPanel>
-            <TabPanel>
-              <SimpleGrid minChildWidth="150px" spacing={8} py={8}>
-                {nfts.map(nft => (
-                  <ActiveNft key={nft.tokenId + nft.contract.address} nft={nft} />
-                ))}
-              </SimpleGrid>
-            </TabPanel>
-          </TabPanels>
-        </Tabs>
+        <SimpleGrid minChildWidth="350px" spacing={8} py={8}>
+          {nfts.map(nft => (
+            <CardComponent key={nft.tokenId + nft.contract.address} nft={nft} />
+          ))}
+        </SimpleGrid>
       )}
     </Container>
   )

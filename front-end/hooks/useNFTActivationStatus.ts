@@ -3,7 +3,7 @@ import { useContractRead } from 'wagmi';
 import abi from '../pages/utils/FeeNFT.json'
 import { CONTRACT_ADDRESS } from '../constants'
 
-type NftActivationStatusResult = {
+export type NftActivationStatusResult = {
     isActivated: boolean | null;
     isError: boolean;
     isLoading: boolean;
