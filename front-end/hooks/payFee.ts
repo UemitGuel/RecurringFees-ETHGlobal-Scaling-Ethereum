@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useContractWrite, usePrepareContractWrite } from 'wagmi';
+import { useContractWrite, usePrepareContractWrite, useWaitForTransaction } from 'wagmi';
 import abi from '../pages/utils/FeeNFT.json';
 import { CONTRACT_ADDRESS } from '../constants';
 import { BigNumber } from 'bignumber.js';
@@ -14,8 +14,6 @@ export type NftFeeStatusResult = {
 const paymentAmount = new BigNumber(0.00001)
 
 const usePayFee = (tokenId: number): NftFeeStatusResult => {
-    const [isSuccess, setIsSuccess] = useState<boolean | null>(null);
-
     const { config } = usePrepareContractWrite({
         address: CONTRACT_ADDRESS,
         abi: abi,
@@ -24,15 +22,14 @@ const usePayFee = (tokenId: number): NftFeeStatusResult => {
         overrides: {
             value: ethers.utils.parseEther('0.00001'),
         },
-        onSuccess(data) {
-            setIsSuccess(true)
-            console.log("Success pay fee")
-        },
         onError() {
             console.log("Errrrrrrrror")
         }
     });
-    const { isLoading, write } = useContractWrite(config);
+    const { data, write } = useContractWrite(config);
+    const { isLoading: isLoading, isSuccess: isSuccess } = useWaitForTransaction({
+        hash: data?.hash,
+    })
 
     return {
         isLoading,
