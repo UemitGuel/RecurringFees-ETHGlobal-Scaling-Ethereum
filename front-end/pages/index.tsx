@@ -45,11 +45,11 @@ const Home: NextPage = () => {
       <Heading>Unpaid Memberships</Heading>
       <Divider />
       {isDisconnected ? null : (
-        <Stack divider={<StackDivider borderColor='gray.200' />} spacing='24px'>
+        <SimpleGrid columns={2} spacing={10}>
           {nfts.map(nft => (
             <CardComponent key={nft.tokenId + nft.contract.address} nft={nft} />
           ))}
-        </Stack>
+        </SimpleGrid>
       )}
     </Container>
   )
