@@ -1,41 +1,29 @@
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import type { NextPage } from 'next';
-import { SimpleGrid, Container, Tabs, Tab, TabList, TabPanels, TabPanel, Stack, StackDivider, Heading, Divider } from '@chakra-ui/react'
+import { SimpleGrid, Container, Heading, Divider } from '@chakra-ui/react'
 import React, { useEffect, useState, useRef } from 'react';
 import { useAccount } from 'wagmi'
-import { getNFTs } from './api/alchemyNFTs';
 import { OwnedNft } from 'alchemy-sdk';
 import CardComponent from '../components/cardComponent';
+import useQueryNFTCount from '../hooks/useQueryNFTCount';
 
 const Home: NextPage = () => {
-  const [nfts, setNfts] = useState<OwnedNft[]>([]);
-  const [isLoading, setIsloading] = useState(false)
+  const [tokenIdArray, setTokenIdArray] = useState<number[]>([])
 
   const { address, isConnected, isDisconnected } = useAccount({
     onDisconnect() {
-      setNfts([])
+      setTokenIdArray([])
       console.log('Disconnected')
     },
   })
-  const prevAddress = useRef<string | undefined>(undefined);
-
-  async function fetchData() {
-    setIsloading(true)
-    if (address && address !== prevAddress.current) {
-      const nfts = await getNFTs(address);
-      setNfts(nfts)
-      console.log(nfts)
-      console.log(address)
-    } else {
-      console.log('address is undefined');
-    }
-    setIsloading(false)
-  }
+  
+  // Hooks
+  const count = useQueryNFTCount()
 
   useEffect(() => {
-    fetchData();
-    prevAddress.current = address;
-  }, [address])
+    const newArray = Array.from({ length: count - 3 }, (_, i) => i);
+    setTokenIdArray(newArray)
+  }, [count])
 
   return (
     <Container maxW="container.md">
@@ -46,8 +34,8 @@ const Home: NextPage = () => {
       <Divider />
       {isDisconnected ? null : (
         <SimpleGrid columns={2} spacing={10}>
-          {nfts.map(nft => (
-            <CardComponent key={nft.tokenId + nft.contract.address} nft={nft} />
+          {tokenIdArray.map(tokenId => (
+            <CardComponent key={tokenId} tokenId={tokenId} />
           ))}
         </SimpleGrid>
       )}

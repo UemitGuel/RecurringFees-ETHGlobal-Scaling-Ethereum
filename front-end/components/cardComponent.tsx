@@ -1,31 +1,26 @@
 import { Card, CardBody, Image, Stack, Heading, Text, Button, Alert, AlertIcon, CardFooter, Flex, Spinner, Badge, Divider, ButtonGroup, Link, HStack } from '@chakra-ui/react'
-import { OwnedNft } from 'alchemy-sdk';
-import { url } from 'inspector';
 import { CONTRACT_ADDRESS } from '../constants'
 import React, { useEffect, useState } from 'react';
 import usePayFee, { NftFeeStatusResult } from '../hooks/payFee';
-import useNftActivationStatus, { NftActivationStatusResult } from '../hooks/useNFTActivationStatus';
+import useQueryNFTData, { NFT } from '../hooks/useQueryNFTData';
 
-interface InActiveNftProps {
-    nft: OwnedNft;
-}
-
-const CardComponent: React.FC<InActiveNftProps> = ({ nft }) => {
-
-    // Prepare hooks
-    const tokenId = parseInt(nft.tokenId);
+const CardComponent = ({ tokenId }: { tokenId: number }) => {
 
     // Hooks 
     const { isPayingFee, successfullyPayedFee, payfee } = usePayFee(tokenId);
-    const { isActivated, loadingActivationStatus, validUntil } = useNftActivationStatus(tokenId);
+    const nft = useQueryNFTData(tokenId)
 
+    const [displayNft, setDisplayNft] = useState<NFT | undefined>(undefined)
     const [nftFeeStatusResult, setNftFeeStatusResult] = useState<NftFeeStatusResult>({ isPayingFee: false, successfullyPayedFee: null, payfee: undefined })
-    const [activationStatus, setActivationStatus] = useState<NftActivationStatusResult>({ isActivated: null, loadingActivationStatus: true, validUntil: '' })
 
     // State changes
     useEffect(() => {
-        setActivationStatus({ isActivated, loadingActivationStatus, validUntil });
-    }, [isActivated]);
+        if (nft) {
+            setDisplayNft(nft)
+            console.log(nft?.imageUrl)
+        }
+    }, [nft])
+
     useEffect(() => {
         if (isPayingFee || successfullyPayedFee !== null) {
             setNftFeeStatusResult({ isPayingFee, successfullyPayedFee, payfee });
@@ -43,16 +38,16 @@ const CardComponent: React.FC<InActiveNftProps> = ({ nft }) => {
                 <Image
                     objectFit='cover'
                     maxW={{ base: '100%', sm: '200px' }}
-                    src={nft.media[0].gateway}
-                    alt='Caffe Latte'
+                    src={displayNft?.imageUrl}
+                    alt='NFT'
                 />
 
 
                 <Stack mt='6' spacing='3'>
-                    <Heading size='md'> {nft.title} <Badge fontSize='0.8em' ml='1' colorScheme={activationStatus.isActivated ? 'green' : 'yellow'}>
-                        {activationStatus.isActivated ? 'Active' : 'Inactive'}
+                    <Heading size='md'> {displayNft?.title} <Badge fontSize='0.8em' ml='1' colorScheme={displayNft?.isActivated ? 'green' : 'yellow'}>
+                        {displayNft?.isActivated ? 'Active' : 'Inactive'}
                     </Badge></Heading>
-                    {activationStatus.isActivated ? null : (
+                    {displayNft?.isActivated ? null : (
                         <Text fontSize='2xl'>
                             Fee: 0.0001 ETH
                         </Text>
@@ -62,9 +57,9 @@ const CardComponent: React.FC<InActiveNftProps> = ({ nft }) => {
             <Divider />
             <CardFooter>
                 <ButtonGroup spacing='2'>
-                    {activationStatus.loadingActivationStatus ? (<Spinner />) : (
-                        !activationStatus.isActivated ? (
-                            <Button variant='solid' colorScheme='blue' disabled={activationStatus.loadingActivationStatus} onClick={() => payfee?.()} isLoading={nftFeeStatusResult.isPayingFee} loadingText='Activating'>
+                    {displayNft?.isLoadingData ? (<Spinner />) : (
+                        !displayNft?.isActivated ? (
+                            <Button variant='solid' colorScheme='blue' disabled={displayNft?.isLoadingData} onClick={handleActivateClick} isLoading={nftFeeStatusResult.isPayingFee} loadingText='Activating'>
                                 Activate
                             </Button>
                         ) : null)}
