@@ -26,7 +26,7 @@ const Home: NextPage = () => {
   }, [count])
 
   return (
-    <Container maxW="container.md">
+    <Container maxW="container.lg">
       <Container p={'16'} centerContent>
         <ConnectButton />
       </Container>

@@ -1,8 +1,9 @@
-import { Card, CardBody, Image, Stack, Heading, Text, Button, Alert, AlertIcon, CardFooter, Flex, Spinner, Badge, Divider, ButtonGroup, Link, HStack } from '@chakra-ui/react'
+import { Card, CardBody, Image, Stack, Heading, Text, Button, Alert, AlertIcon, CardFooter, Flex, Spinner, Badge, Divider, ButtonGroup, Link, HStack, List, ListIcon, ListItem } from '@chakra-ui/react'
 import { CONTRACT_ADDRESS } from '../constants'
 import React, { useEffect, useState } from 'react';
 import usePayFee, { NftFeeStatusResult } from '../hooks/payFee';
 import useQueryNFTData, { NFT } from '../hooks/useQueryNFTData';
+import { AtSignIcon, CheckCircleIcon, RepeatClockIcon, UnlockIcon } from '@chakra-ui/icons';
 
 const CardComponent = ({ tokenId }: { tokenId: number }) => {
 
@@ -47,11 +48,22 @@ const CardComponent = ({ tokenId }: { tokenId: number }) => {
                     <Heading size='md'> {displayNft?.title} <Badge fontSize='0.8em' ml='1' colorScheme={displayNft?.isActivated ? 'green' : 'yellow'}>
                         {displayNft?.isActivated ? 'Active' : 'Inactive'}
                     </Badge></Heading>
-                    {displayNft?.isActivated ? null : (
-                        <Text fontSize='2xl'>
-                            Fee: 0.0001 ETH
-                        </Text>
-                    )}
+                    <List spacing={3}>
+                        <ListItem>
+                            <ListIcon as={AtSignIcon} />
+                            Owner: {nft?.owner}
+                        </ListItem>
+                        <ListItem>
+                            <ListIcon as={displayNft?.isActivated ? CheckCircleIcon : RepeatClockIcon} color={displayNft?.isActivated ? 'green.500' : 'yellow.500'} />
+                            {displayNft?.isActivated ? `valid until: ${displayNft.validUntil}` : 'Please renew your membership'}
+                        </ListItem>
+                        {displayNft?.isActivated ? null : (
+                            <ListItem>
+                                <ListIcon as={UnlockIcon} />
+                                0.0001 ETH
+                            </ListItem>
+                        )}
+                    </List>
                 </Stack>
             </CardBody>
             <Divider />
