@@ -42,7 +42,7 @@ const Home: NextPage = () => {
       <Container p={'16'} centerContent>
         <ConnectButton />
       </Container>
-      <Heading>Unpaid Memberships</Heading>
+      <Heading>Memberships</Heading>
       <Divider />
       {isDisconnected ? null : (
         <SimpleGrid columns={2} spacing={10}>
