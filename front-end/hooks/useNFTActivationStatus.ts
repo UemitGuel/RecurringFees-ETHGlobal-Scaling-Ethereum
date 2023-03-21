@@ -5,7 +5,6 @@ import { CONTRACT_ADDRESS } from '../constants'
 
 export type NftActivationStatusResult = {
     isActivated: boolean | null;
-    isError: boolean;
     isLoading: boolean;
 };
 
@@ -21,6 +20,8 @@ const useNftActivationStatus = (tokenId: number | null): NftActivationStatusResu
         watch: true,
         onSuccess(data) {
             setIsActivated(data as boolean);
+            console.log(tokenId)
+            console.log(data as boolean)
             setIsLoading(false)
         },
     });
@@ -33,7 +34,6 @@ const useNftActivationStatus = (tokenId: number | null): NftActivationStatusResu
 
     return {
         isActivated,
-        isError,
         isLoading,
     };
 };

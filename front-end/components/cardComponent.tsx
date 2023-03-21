@@ -1,5 +1,6 @@
-import { Card, CardBody, Image, Stack, Heading, Text, Button, Alert, AlertIcon } from '@chakra-ui/react'
+import { Card, CardBody, Image, Stack, Heading, Text, Button, Alert, AlertIcon, CardFooter, Flex, Spinner } from '@chakra-ui/react'
 import { OwnedNft } from 'alchemy-sdk';
+import { url } from 'inspector';
 import React, { useEffect, useState } from 'react';
 import usePayFee, { NftFeeStatusResult } from '../hooks/payFee';
 import useNftActivationStatus, { NftActivationStatusResult } from '../hooks/useNFTActivationStatus';
@@ -11,11 +12,11 @@ interface InActiveNftProps {
 const CardComponent: React.FC<InActiveNftProps> = ({ nft }) => {
     const tokenId = parseInt(nft.tokenId);
 /*     const { isLoading: loadingPayedFee, isSuccess, write } = usePayFee(tokenId);
- */    const { isActivated, isError, isLoading  } = useNftActivationStatus(tokenId);
-    const [activationStatus, setActivationStatus] = useState<NftActivationStatusResult>({ isActivated: null, isError: false, isLoading: true});
+ */    const { isActivated, isLoading  } = useNftActivationStatus(tokenId);
+    const [activationStatus, setActivationStatus] = useState<NftActivationStatusResult>({ isActivated: null, isLoading: true});
 
     useEffect(() => {
-        setActivationStatus({ isActivated, isError, isLoading});
+        setActivationStatus({ isActivated, isLoading});
     }, [isActivated]);
 
 /*     useEffect(() => {
@@ -30,26 +31,29 @@ const CardComponent: React.FC<InActiveNftProps> = ({ nft }) => {
     }; */
 
     return (
-        <Card maxW='sm'>
-            <CardBody>
-                <Image
-                    src={nft.media[0].gateway}
-                    alt='Green double couch with wooden legs'
-                    borderRadius='lg'
-                />
-                <Stack mt='6' spacing='3'>
+        <Flex>
+            <Card>
+            <Image
+                objectFit='cover'
+                maxW={{ base: '100%', sm: '200px' }}
+                src={nft.media[0].gateway}
+                alt='Caffe Latte'
+            />
+            </Card>
+
+            <Stack p={'8'}>
                     <Heading size='md'>{nft.title}</Heading>
-                    <Text color='blue.600' fontSize='2xl'>
-                        0.45 ETH
+                    <Text py='2'>
+                        Membership fee 0.0001 ETH
                     </Text>
-                    {isActivated ? (
+                    {activationStatus.isLoading ? ( <Spinner />) : (
+                    !activationStatus.isActivated ? (
                         <Button variant='solid' colorScheme='blue' disabled={activationStatus.isLoading}>
                             {activationStatus.isLoading ? 'Activating...' : 'Activate'}
                         </Button>
-                        ) : null}
-                </Stack>
-            </CardBody>
-        </Card>
+                    ) : null)}
+            </Stack>
+        </Flex>
     )
 }
 

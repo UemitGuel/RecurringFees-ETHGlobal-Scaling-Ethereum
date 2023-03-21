@@ -1,6 +1,6 @@
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import type { NextPage } from 'next';
-import { SimpleGrid, Container, Tabs, Tab, TabList, TabPanels, TabPanel } from '@chakra-ui/react'
+import { SimpleGrid, Container, Tabs, Tab, TabList, TabPanels, TabPanel, Stack, StackDivider, Heading, Divider } from '@chakra-ui/react'
 import React, { useEffect, useState, useRef } from 'react';
 import { useAccount } from 'wagmi'
 import { getNFTs } from './api/alchemyNFTs';
@@ -38,16 +38,18 @@ const Home: NextPage = () => {
   }, [address])
 
   return (
-    <Container maxW="container.xl">
+    <Container maxW="container.md">
       <Container p={'16'} centerContent>
         <ConnectButton />
       </Container>
+      <Heading>Unpaid Memberships</Heading>
+      <Divider />
       {isDisconnected ? null : (
-        <SimpleGrid minChildWidth="350px" spacing={8} py={8}>
+        <Stack divider={<StackDivider borderColor='gray.200' />} spacing='24px'>
           {nfts.map(nft => (
             <CardComponent key={nft.tokenId + nft.contract.address} nft={nft} />
           ))}
-        </SimpleGrid>
+        </Stack>
       )}
     </Container>
   )
