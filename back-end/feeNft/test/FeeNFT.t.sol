@@ -59,15 +59,22 @@ contract FeeNFTTest is PRBTest, StdCheats {
     assertEq(feeNft.tokenURI(0), tokenUriInactive);
   }
 
-  function test_activation() external {
-    console2.log(mintFee);
+  function test_deactivationWithTime() external {
     assertFalse(feeNft.getIsActivated(0));
+    uint256 time0 = block.timestamp;
+
     feeNft.payFee{ value: 0.00001 ether }(0);
     assertTrue(feeNft.getIsActivated(0));
-    feeNft.transferFrom(bob, alice, 0);
-    address newOwner = feeNft.ownerOf(0);
-    assertNotEq(newOwner, bob);
-    assertEq(newOwner, alice);
+    //change time and check true before time
+    console2.log(time0);
+    vm.warp(2419100);
+    uint256 time1 = block.timestamp;
+    console2.log(time1);
+    assertTrue(feeNft.getIsActivated(0));
+
+    vm.warp(2419202);
+    uint256 time2 = block.timestamp;
+    console2.log(time2);
     assertFalse(feeNft.getIsActivated(0));
     assertEq(feeNft.tokenURI(0), tokenUriInactive);
   }
