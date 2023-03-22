@@ -1,59 +1,88 @@
-import { Card, CardBody, Image, Stack, Heading, Text, Button, Alert, AlertIcon, CardFooter, Flex, Spinner } from '@chakra-ui/react'
-import { OwnedNft } from 'alchemy-sdk';
-import { url } from 'inspector';
+import { Card, CardBody, Image, Stack, Heading, Text, Button, Alert, AlertIcon, CardFooter, Flex, Spinner, Badge, Divider, ButtonGroup, Link, HStack, List, ListIcon, ListItem } from '@chakra-ui/react'
+import { CONTRACT_ADDRESS } from '../constants'
 import React, { useEffect, useState } from 'react';
 import usePayFee, { NftFeeStatusResult } from '../hooks/payFee';
-import useNftActivationStatus, { NftActivationStatusResult } from '../hooks/useNFTActivationStatus';
+import useQueryNFTData, { NFT } from '../hooks/useQueryNFTData';
+import { AtSignIcon, CheckCircleIcon, RepeatClockIcon, UnlockIcon } from '@chakra-ui/icons';
 
-interface InActiveNftProps {
-    nft: OwnedNft;
-}
+const CardComponent = ({ tokenId }: { tokenId: number }) => {
 
-const CardComponent: React.FC<InActiveNftProps> = ({ nft }) => {
-    const tokenId = parseInt(nft.tokenId);
-/*     const { isLoading: loadingPayedFee, isSuccess, write } = usePayFee(tokenId);
- */    const { isActivated, isLoading  } = useNftActivationStatus(tokenId);
-    const [activationStatus, setActivationStatus] = useState<NftActivationStatusResult>({ isActivated: null, isLoading: true});
+    // Hooks 
+    const { isPayingFee, successfullyPayedFee, payfee } = usePayFee(tokenId);
+    const nft = useQueryNFTData(tokenId)
+
+    const [displayNft, setDisplayNft] = useState<NFT | undefined>(undefined)
+    const [nftFeeStatusResult, setNftFeeStatusResult] = useState<NftFeeStatusResult>({ isPayingFee: false, successfullyPayedFee: null, payfee: undefined })
+
+    // State changes
+    useEffect(() => {
+        if (nft) {
+            setDisplayNft(nft)
+            console.log(nft?.imageUrl)
+        }
+    }, [nft])
 
     useEffect(() => {
-        setActivationStatus({ isActivated, isLoading});
-    }, [isActivated]);
-
-/*     useEffect(() => {
-        if (loadingPayedFee || isSuccess !== null) {
-            setActivationStatus({ loadingPayedFee, isSuccess, write });
+        if (isPayingFee || successfullyPayedFee !== null) {
+            setNftFeeStatusResult({ isPayingFee, successfullyPayedFee, payfee });
         }
-    }, [loadingPayedFee, isSuccess]); */
+    }, [isPayingFee, successfullyPayedFee]);
 
-/*     const handleActivateClick = () => {
-        setActivationStatus({ isLoading: true, isSuccess: null, write: write });
-        write?.(); // call the write function only when it's defined
-    }; */
+    const handleActivateClick = () => {
+        setNftFeeStatusResult({ isPayingFee: true, successfullyPayedFee: null, payfee });
+        payfee?.()
+    };
 
     return (
-        <Flex>
-            <Card>
-            <Image
-                objectFit='cover'
-                maxW={{ base: '100%', sm: '200px' }}
-                src={nft.media[0].gateway}
-                alt='Caffe Latte'
-            />
-            </Card>
+        <Card>
+            <CardBody>
+                <Image
+                    objectFit='cover'
+                    maxW={{ base: '100%', sm: '200px' }}
+                    src={displayNft?.imageUrl}
+                    alt='NFT'
+                />
 
-            <Stack p={'8'}>
-                    <Heading size='md'>{nft.title}</Heading>
-                    <Text py='2'>
-                        Membership fee 0.0001 ETH
-                    </Text>
-                    {activationStatus.isLoading ? ( <Spinner />) : (
-                    !activationStatus.isActivated ? (
-                        <Button variant='solid' colorScheme='blue' disabled={activationStatus.isLoading}>
-                            {activationStatus.isLoading ? 'Activating...' : 'Activate'}
-                        </Button>
-                    ) : null)}
-            </Stack>
-        </Flex>
+
+                <Stack mt='6' spacing='3'>
+                    <Heading size='md'> {displayNft?.title} <Badge fontSize='0.8em' ml='1' colorScheme={displayNft?.isActivated ? 'green' : 'yellow'}>
+                        {displayNft?.isActivated ? 'Active' : 'Inactive'}
+                    </Badge></Heading>
+                    <List spacing={3}>
+                        <ListItem>
+                            <ListIcon as={AtSignIcon} />
+                            Owner: {nft?.owner}
+                        </ListItem>
+                        <ListItem>
+                            <ListIcon as={displayNft?.isActivated ? CheckCircleIcon : RepeatClockIcon} color={displayNft?.isActivated ? 'green.500' : 'yellow.500'} />
+                            {displayNft?.isActivated ? `valid until: ${displayNft.validUntil}` : 'Please renew your membership'}
+                        </ListItem>
+                        {displayNft?.isActivated ? null : (
+                            <ListItem>
+                                <ListIcon as={UnlockIcon} />
+                                0.0001 ETH
+                            </ListItem>
+                        )}
+                    </List>
+                </Stack>
+            </CardBody>
+            <Divider />
+            <CardFooter>
+                <ButtonGroup spacing='2'>
+                    {displayNft?.isLoadingData ? (<Spinner />) : (
+                        !displayNft?.isActivated ? (
+                            <Button variant='solid' colorScheme='blue' disabled={displayNft?.isLoadingData} onClick={handleActivateClick} isLoading={nftFeeStatusResult.isPayingFee} loadingText='Activating'>
+                                Activate
+                            </Button>
+                        ) : null)}
+                    <Button variant='ghost' colorScheme='blue'>
+                        <Link href={`https://testnets.opensea.io/assets/goerli/${CONTRACT_ADDRESS}/${tokenId}`} isExternal>
+                            See on Opensea
+                        </Link>
+                    </Button>
+                </ButtonGroup>
+            </CardFooter>
+        </Card>
     )
 }
 

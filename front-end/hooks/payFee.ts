@@ -6,9 +6,9 @@ import { BigNumber } from 'bignumber.js';
 import { ethers } from 'ethers';
 
 export type NftFeeStatusResult = {
-    isLoading: boolean;
-    isSuccess: boolean | null;
-    write: (() => void) | undefined;
+    isPayingFee: boolean;
+    successfullyPayedFee: boolean | null;
+    payfee: (() => void) | undefined;
 };
 
 const paymentAmount = new BigNumber(0.00001)
@@ -26,15 +26,15 @@ const usePayFee = (tokenId: number): NftFeeStatusResult => {
             console.log("Errrrrrrrror")
         }
     });
-    const { data, write } = useContractWrite(config);
-    const { isLoading: isLoading, isSuccess: isSuccess } = useWaitForTransaction({
+    const { data, write: payfee } = useContractWrite(config);
+    const { isLoading: isPayingFee, isSuccess: successfullyPayedFee } = useWaitForTransaction({
         hash: data?.hash,
     })
 
     return {
-        isLoading,
-        isSuccess,
-        write
+        isPayingFee,
+        successfullyPayedFee,
+        payfee
     };
 };
 
