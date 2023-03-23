@@ -38,6 +38,9 @@ const contract = {
 
 function unixTimestampToString(unixTimestamp: BigNumber): string | null {
     // Convert the BigNumber to a JavaScript number
+    if (unixTimestamp == null) {
+        return null
+    }
     const timestampNumber = unixTimestamp.toNumber();
     if (timestampNumber == 0) {
         return null
@@ -95,18 +98,6 @@ const useQueryNFTData = (tokenId: number): NFT | undefined => {
             setValidUntil(dataString)
             setOwner(data[2] as string)
             setTokenURI(data[3] as string)
-/*             const requestURL = tokenURI.replace("ipfs://", "https://ipfs.io/ipfs/");
-            const tokenURIResponse = await(await fetch(requestURL)).json();
-            const imageURI = tokenURIResponse.image;
-            const imageURIURL = imageURI.replace("ipfs://", "https://ipfs.io/ipfs/");
-            const owner = await ownerOf(tokenId);
-            setImageURI(imageURIURL);
-            setTokenOwner(owner);
-
-            setTokenName(tokenURIResponse.name);
-            setTokenDescription(tokenURIResponse.description);
-
-            console.log(data) */
         },
     });
 

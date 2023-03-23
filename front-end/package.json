@@ -14,7 +14,6 @@
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
     "@rainbow-me/rainbowkit": "^0.12.1",
-    "alchemy-sdk": "^2.6.1",
     "big-number": "^2.0.0",
     "bignumber.js": "^9.1.1",
     "ethers": "^5.0.0",

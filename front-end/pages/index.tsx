@@ -3,7 +3,6 @@ import type { NextPage } from 'next';
 import { SimpleGrid, Container, Heading, Divider } from '@chakra-ui/react'
 import React, { useEffect, useState, useRef } from 'react';
 import { useAccount } from 'wagmi'
-import { OwnedNft } from 'alchemy-sdk';
 import CardComponent from '../components/cardComponent';
 import useQueryNFTCount from '../hooks/useQueryNFTCount';
 

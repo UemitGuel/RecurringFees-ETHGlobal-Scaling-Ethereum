@@ -3,14 +3,14 @@ import '@rainbow-me/rainbowkit/styles.css';
 import { getDefaultWallets, RainbowKitProvider } from '@rainbow-me/rainbowkit';
 import type { AppProps } from 'next/app';
 import { configureChains, createClient, WagmiConfig } from 'wagmi';
-import { goerli } from 'wagmi/chains';
+import { goerli, optimismGoerli } from 'wagmi/chains';
 import { infuraProvider } from 'wagmi/providers/infura'
 import { publicProvider } from 'wagmi/providers/public';
 import { ChakraProvider } from '@chakra-ui/react'
 import React from 'react';
 
 const { chains, provider } = configureChains(
-  [goerli],
+  [goerli, optimismGoerli],
   [infuraProvider({ apiKey: process.env.NEXT_PUBLIC_INFURA_APIKEY || '' })],
 );
 

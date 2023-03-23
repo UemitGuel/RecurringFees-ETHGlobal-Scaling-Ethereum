@@ -42,8 +42,6 @@ const CardComponent = ({ tokenId }: { tokenId: number }) => {
                     src={displayNft?.imageUrl}
                     alt='NFT'
                 />
-
-
                 <Stack mt='6' spacing='3'>
                     <Heading size='md'> {displayNft?.title} <Badge fontSize='0.8em' ml='1' colorScheme={displayNft?.isActivated ? 'green' : 'yellow'}>
                         {displayNft?.isActivated ? 'Active' : 'Inactive'}
@@ -76,8 +74,8 @@ const CardComponent = ({ tokenId }: { tokenId: number }) => {
                             </Button>
                         ) : null)}
                     <Button variant='ghost' colorScheme='blue'>
-                        <Link href={`https://testnets.opensea.io/assets/goerli/${CONTRACT_ADDRESS}/${tokenId}`} isExternal>
-                            See on Opensea
+                        <Link href={`https://qx.app/asset/${CONTRACT_ADDRESS}/${tokenId}`} isExternal>
+                            See on Quix
                         </Link>
                     </Button>
                 </ButtonGroup>
