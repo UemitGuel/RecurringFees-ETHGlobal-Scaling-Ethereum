@@ -20,7 +20,6 @@ const Home: NextPage = () => {
   const count = useQueryNFTCount()
 
   useEffect(() => {
-    console.log(count)
     const newArray = Array.from({ length: count }, (_, i) => i);
     setTokenIdArray(newArray)
   }, [count])
