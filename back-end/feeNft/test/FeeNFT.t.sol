@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.19 <0.9.0;
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "../src/FeeNFT.sol";
 import { PRBTest } from "@prb/test/PRBTest.sol";
@@ -9,9 +9,9 @@ import { console2 } from "forge-std/console2.sol";
 
 contract FeeNFTTest is PRBTest, StdCheats {
   FeeNFT public feeNft;
-  string tokenUriActivated = "ipfs://QmSiMZHGoymC9SGS9RV9zwfJZRKC5d8ppP3UpLsAJwcJwU";
+  string tokenUriActivated = "ipfs://QmQVE9YJ9br7p8VDG5smbiPjugYaifzi3RCX4U3Ccy5yKC";
 
-  string tokenUriInactive = "ipfs://QmWod8a7qEaGTY2ckxagHsKqodrNc1isBur8fDx94crt2P";
+  string tokenUriInactive = "ipfs://QmRNBVhSHnAfQdBPuPAqaV57rggmsVzwBctCFvgvF5HAek";
   uint256 mintLimit = 1000;
   uint256 mintFee = 100000000000000;
   uint256 subscriptionFee = 10000000000000;
@@ -77,6 +77,30 @@ contract FeeNFTTest is PRBTest, StdCheats {
     console2.log(time2);
     assertFalse(feeNft.getIsActivated(0));
     assertEq(feeNft.tokenURI(0), tokenUriInactive);
+  }
+
+  function test_Revert_payFeeToNotMintedToken() public {
+    vm.expectRevert("ERC721: invalid token ID");
+
+    feeNft.payFee{ value: 0.00001 ether }(10);
+  }
+
+  function test_Revert_tokenURIToNotMintedToken() public {
+    vm.expectRevert("ERC721: invalid token ID");
+
+    feeNft.tokenURI(10);
+  }
+
+  function test_Revert_notEnoughETHNotMintedToken() public {
+    vm.expectRevert(FeeNft__NeedMoreETHSent.selector);
+
+    feeNft.mint{ value: 0.00001 ether }();
+  }
+
+  function test_Revert_notEnoughETHNotMintedToken() public {
+    vm.expectRevert(FeeNft__NeedMoreETHSent.selector);
+
+    feeNft.mint{ value: 0.00001 ether }();
   }
   /// @dev Test that fuzzes an unsigned integer.
   //function testFuzz_Example(uint256 x) external {

@@ -1,22 +1,23 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.19;
 
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 error FeeNft__NeedMoreETHSent();
 error FeeNft__TransferFailed();
 error FeeNFT__NoLongerMintable();
 
-contract FeeNFT is ERC721URIStorage, Ownable {
+contract FeeNFT is ERC721, Ownable {
+  uint256 private immutable MINT_LIMIT;
+  uint256 private immutable MINT_FEE;
+  uint256 private immutable SUBSCRIPTION_FEE;
+  uint256 private immutable TIME;
   string internal s_activatedUri;
   string internal s_notActivatedUri;
   uint256 private s_tokenCounter;
-  uint256 private immutable i_mintLimit;
-  uint256 private immutable i_mintFee;
-  uint256 private immutable i_subscriptionFee;
-  uint256 private immutable i_time;
-  mapping(uint256 => uint256) s_validUntil;
+
+  mapping(uint256 => uint256) private s_validUntil;
 
   event Deactivated(uint256 indexed tokenId, address indexed from, uint256 indexed timestamp);
   event FeePayed(uint256 indexed tokenId, address indexed payer, uint256 indexed timestamp);
@@ -29,20 +30,25 @@ contract FeeNFT is ERC721URIStorage, Ownable {
     string memory activatedUri,
     string memory inactiveUri
   ) ERC721("feeNft", "FEE") {
-    i_mintLimit = mintLimit;
-    i_mintFee = mintFee;
-    i_subscriptionFee = monthlyFee;
-    i_time = subscriptionTime;
+    MINT_LIMIT = mintLimit;
+    MINT_FEE = mintFee;
+    SUBSCRIPTION_FEE = monthlyFee;
+    TIME = subscriptionTime;
     s_activatedUri = activatedUri;
     s_notActivatedUri = inactiveUri;
     s_tokenCounter = 0;
   }
 
+  modifier requireMinted(uint256 tokenId) {
+    _requireMinted(tokenId);
+    _;
+  }
+
   function mint() public payable returns (uint256) {
-    if (msg.value < i_mintFee) {
+    if (msg.value < MINT_FEE) {
       revert FeeNft__NeedMoreETHSent();
     }
-    if (s_tokenCounter >= i_mintLimit) {
+    if (s_tokenCounter >= MINT_LIMIT) {
       revert FeeNFT__NoLongerMintable();
     }
     uint256 newItemId = s_tokenCounter;
@@ -51,10 +57,10 @@ contract FeeNFT is ERC721URIStorage, Ownable {
     return newItemId;
   }
 
-  function payFee(uint256 tokenId) public payable {
-    if (msg.value < i_subscriptionFee) revert FeeNft__NeedMoreETHSent();
+  function payFee(uint256 tokenId) public payable requireMinted(tokenId) {
+    if (msg.value < SUBSCRIPTION_FEE) revert FeeNft__NeedMoreETHSent();
 
-    s_validUntil[tokenId] = block.timestamp + i_time;
+    s_validUntil[tokenId] = block.timestamp + TIME;
     emit FeePayed(tokenId, msg.sender, block.timestamp);
   }
 
@@ -87,9 +93,7 @@ contract FeeNFT is ERC721URIStorage, Ownable {
     }
   }
 
-  function tokenURI(uint256 tokenId) public view override returns (string memory) {
-    _requireMinted(tokenId);
-
+  function tokenURI(uint256 tokenId) public view override requireMinted(tokenId) returns (string memory) {
     if (block.timestamp <= s_validUntil[tokenId]) {
       return s_activatedUri;
     } else {
@@ -97,28 +101,28 @@ contract FeeNFT is ERC721URIStorage, Ownable {
     }
   }
 
-  function getValidUntil(uint256 tokenId) public view returns (uint256) {
+  function getValidUntil(uint256 tokenId) public view requireMinted(tokenId) returns (uint256) {
     return s_validUntil[tokenId];
   }
 
-  function getIsActivated(uint256 tokenId) public view returns (bool) {
+  function getIsActivated(uint256 tokenId) public view requireMinted(tokenId) returns (bool) {
     return s_validUntil[tokenId] >= block.timestamp;
   }
 
   function getMintFee() public view returns (uint256) {
-    return i_mintFee;
+    return MINT_FEE;
   }
 
   function getSubscriptionFee() public view returns (uint256) {
-    return i_subscriptionFee;
+    return SUBSCRIPTION_FEE;
   }
 
   function getSubscriptionTime() public view returns (uint256) {
-    return i_time;
+    return TIME;
   }
 
   function getMintLimit() public view returns (uint256) {
-    return i_mintLimit;
+    return MINT_LIMIT;
   }
 
   function getTokenCounter() public view returns (uint256) {
